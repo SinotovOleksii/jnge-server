@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "crc": "^4.3.2"
+  },
+  "name": "jnge-server",
+  "version": "1.0.0",
+  "main": "jnge.mjs",
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "request": "^2.88.2"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
