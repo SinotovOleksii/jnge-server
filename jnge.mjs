@@ -4,7 +4,6 @@ import { Buffer } from 'node:buffer';
 
 class JNGE{
     #devAddress;
-
     constructor(devAddress){
         this.#devAddress = devAddress;
     };
@@ -90,7 +89,6 @@ class JNGE{
         return parsedObj;
 
     };
-
     /**
     * @description getParameter(Buffer, number, number, number) parsing data from device data value to readeble format. Return null if any error
     * @param {Buffer, number, number, number} 
@@ -120,6 +118,9 @@ class JNGE{
         return paramValue.toFixed(2);
     };
 };
+
+export default JNGE;
+
 /*
 var g = new JNGE('66');
 var a;
@@ -137,7 +138,7 @@ console.log('------------------------');
 g.getParameter(a.devData, 0x1000, 0x1011, 1);
 
 */
-export default JNGE;
+
 
 
 //06124c110003c7090108f50901138700000057011e0156000000001388000000039ff30000073000c800020001000000ef000000010c1c08fc0000000000000000000000000001035100480002082f2e92

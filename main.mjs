@@ -17,9 +17,9 @@ function readHandler(client, data){
     var tdate = new Date();
     tdate = `${tdate.getHours()}:${tdate.getMinutes()}:${tdate.getSeconds()}.${tdate.getMilliseconds()}`;
     console.log(`${tdate}: Data from main: ${client}: ${data}`);
-    var buf = Buffer.from(data, 'hex')
-
+    var buf = Buffer.from(data, 'hex');
     var parsedData = j.parseData(buf);
+    
     if (!parsedData) return;
     if (parsedData.devFuncCode == 0x12) {
         console.log('Active power:');
