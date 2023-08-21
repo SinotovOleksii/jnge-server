@@ -72,15 +72,15 @@ describe('Tests for JNGE class', () => {
       var parsedObj = jn.parseData(Buffer.from('06124c110003c7090108f50901138700000057011e0156000000001388000000039ff30000073000c800020001000000ef000000010c1c08fc0000000000000000000000000001035100480002082f2e92', 'hex'));
       var expectedVal = 200.00;
       var parsedValue = jn.getParameter(parsedObj.devData, 0x1000, 0x1010, 1);
-      assert.deepEqual(parsedValue, expectedVal);
+      assert.deepEqual(parsedValue.dec.toFixed(2), expectedVal);
 
       expectedVal = 230.50;
       parsedValue = jn.getParameter(parsedObj.devData, 0x1000, 0x1000, 0.1);
-      assert.deepEqual(parsedValue, expectedVal);
+      assert.deepEqual(parsedValue.dec.toFixed(2), expectedVal);
 
       expectedVal = 209.50;
       parsedValue = jn.getParameter(parsedObj.devData, 0x1000, 0x1023, 0.1);
-      assert.deepEqual(parsedValue, expectedVal);
+      assert.deepEqual(parsedValue.dec.toFixed(2), expectedVal);
     });
 
     it('Test getParameter() not existed value', () => {
