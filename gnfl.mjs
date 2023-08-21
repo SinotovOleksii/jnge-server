@@ -12,36 +12,27 @@ class GNFL extends JNGE {
   #failureCodePV;
   #inverterState = new Map();
   #pvChargerState = new Map();
-  #mainsChargedState = new Map();
+  #mainsChargerState = new Map();
   constructor(devAddress) {
     super(devAddress);
     this.#inverterWorkingMode.set((0).toString(16), "Smart mode");
     this.#inverterWorkingMode.set((0).toString(16), "Battery priority mode");
-    this.#inverterWorkingMode.set(
-      (0).toString(16),
-      "Municipal power priority mode"
-    );
+    this.#inverterWorkingMode.set((0).toString(16), "Municipal power priority mode" );
     this.#inverterWorkingMode.set((0).toString(16), "Energy-saving mode");
 
     this.#inverterState.set((0).toString(16), "Standby");
-    this.#inverterState.set(
-      (1).toString(16),
-      "Municipal electric charging soft start"
-    );
+    this.#inverterState.set((1).toString(16), "Municipal electric charging soft start");
     this.#inverterState.set((2).toString(16), "The inverter has a soft start");
     this.#inverterState.set((3).toString(16), "Inverse runs normally");
     this.#inverterState.set((4).toString(16), "Municipal power bypass");
-    this.#inverterState.set(
-      (5).toString(16),
-      "Charging of municipal power bypass"
-    );
+    this.#inverterState.set((5).toString(16), "Charging of municipal power bypass");
     this.#inverterState.set((6).toString(16), "Failure mode");
     this.#inverterState.set((7).toString(16), "Commissioning mode");
 
-    this.#mainsChargedState.set((0).toString(16), "Standby");
-    this.#mainsChargedState.set((1).toString(16), "Constant charge");
-    this.#mainsChargedState.set((2).toString(16), "Raise the charging");
-    this.#mainsChargedState.set((3).toString(16), "Full of it");
+    this.#mainsChargerState.set(0, "Standby");
+    this.#mainsChargerState.set(1, "Constant charge");
+    this.#mainsChargerState.set(2, "Raise the charging");
+    this.#mainsChargerState.set(3, "Full of it");
 
     this.#pvChargerState.set((0).toString(16), "Does not charge");
     this.#pvChargerState.set((1).toString(16), "MPPT charging");
@@ -59,44 +50,19 @@ class GNFL extends JNGE {
       mask: [
         { pos: 15, desc: "Reserved", 0: "", 1: "" },
         { pos: 14, desc: "Reserved", 0: "", 1: "" },
-        {
-          pos: 13,
-          desc: "AC input slow start relay status",
-          0: "Open",
-          1: "Close",
-        },
+        { pos: 13, desc: "AC input slow start relay status", 0: "Open", 1: "Close"},
         { pos: 12, desc: "Fan running status", 0: "Stop", 1: "Run" },
         { pos: 11, desc: "EPO status", 0: "Invalid", 1: "Effective" },
-        {
-          pos: 10,
-          desc: "Inverter phase-locked state",
-          0: "Unlocked in phase",
-          1: "Phase-locking",
-        },
+        { pos: 10, desc: "Inverter phase-locked state", 0: "Unlocked in phase", 1: "Phase-locking" },
         { pos: 9, desc: "Bypass static switch", 0: "Open", 1: "Close" },
         { pos: 8, desc: "DC input delay relay status", 0: "Open", 1: "Close" },
         { pos: 7, desc: "DC Input relay status ", 0: "Open", 1: "Close" },
         { pos: 6, desc: "Inverter relay status", 0: "Open", 1: "Close" },
         { pos: 5, desc: "Bypass relay status", 0: "Open", 1: "Close" },
         { pos: 4, desc: "AC Input power supply status", 0: "Stop", 1: "Run" },
-        {
-          pos: 3,
-          desc: "Energy-saving mode allows",
-          0: "Not allowed",
-          1: "Allow",
-        },
-        {
-          pos: 2,
-          desc: "AC mains charging is allowed",
-          0: "Not allowed",
-          1: "Allow",
-        },
-        {
-          pos: 1,
-          desc: "AC mains charging switch status",
-          0: "AC mains is charging",
-          1: "AC mains is not charging",
-        },
+        { pos: 3, desc: "Energy-saving mode allows", 0: "Not allowed", 1: "Allow"},
+        { pos: 2, desc: "AC mains charging is allowed", 0: "Not allowed", 1: "Allow" },
+        { pos: 1, desc: "AC mains charging switch status", 0: "AC mains is charging", 1: "AC mains is not charging" },
         { pos: 0, desc: "Command to diesel engine", 0: "Stop", 1: "Start" },
       ],
     };
@@ -163,7 +129,15 @@ class GNFL extends JNGE {
   }
   //prepareCommand
   //readParamsSet
-  //chargerState
+  //mainsChargerState
+  getMainsChargerState(data){
+    //0x1008 
+    console.log('getMainsChargerState work with:', data);
+    if (isNaN( parseInt(data) )) return null;
+    if (!this.#mainsChargerState.has( data )) return null;
+
+    return this.#mainsChargerState.get(data);
+  }
   //inverterState
   //mpptState
   //getParam
@@ -171,6 +145,14 @@ class GNFL extends JNGE {
 }
 
 export default GNFL;
+
+
+
+
+
+
+
+
 /*
 Did not realize
 Inverter switch machine  status 0x1016

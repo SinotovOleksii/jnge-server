@@ -92,7 +92,7 @@ class JNGE{
     /**
     * @description getParameter(Buffer, number, number, number) parsing data from device data value to readeble format. Return null if any error
     * @param {Buffer, number, number, number} 
-    * @return {number}
+    * @return object { 'hex': string, 'dec' : int }
     */
     getParameter(data, offsetAddr, paramAddr, coefficient){
         if (!Buffer.isBuffer(data)) {
@@ -115,7 +115,9 @@ class JNGE{
         var paramRawData = parseInt(data.subarray(paramIdx*2, paramIdx*2+2).toString('hex'), 16);
         var paramValue = paramRawData * coefficient;
         console.log(`getParameter 0x${paramAddr.toString(16)} hex: 0x${paramRawData.toString(16)} val: ${paramValue.toFixed(2)}, coeff: ${coefficient}`);
-        return paramValue.toFixed(2);
+        return {'hex': paramRawData, 'dec' : paramValue};
+        //return  paramValue.toFixed(2);
+        //return paramValue;
     };
 };
 
