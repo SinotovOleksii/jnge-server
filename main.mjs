@@ -28,7 +28,19 @@ function readHandler(client, data){
         //console.log('PV power:');
         //j.getParameter(parsedData.devData, 0x1000, 0x1023, 0.1);
         var mainsChargerState = j.getParameter(parsedData.devData, 0x1000, 0x1008, 1);
+        var inverterState = j.getParameter(parsedData.devData, 0x1000, 0x100C, 1);
+        var pvChargerState = j.getParameter(parsedData.devData, 0x1000, 0x1022, 1);
+        var inverterWorkingMode = j.getParameter(parsedData.devData, 0x1000, 0x1004, 1);
+        var batteryType = j.getParameter(parsedData.devData, 0x1000, 0x1012, 1);
+        var failureCode1 = j.getParameter(parsedData.devData, 0x1000, 0x101C, 1);
+        var failureCode2 = j.getParameter(parsedData.devData, 0x1000, 0x101D, 1);
         console.log( 'Main charger state:', j.getMainsChargerState(mainsChargerState.hex) );
+        console.log( 'Inverter state:', j.getInverterState(inverterState.hex) );
+        console.log( 'PV charger state:', j.getPvChargerState(pvChargerState.hex) );
+        console.log( 'Inverter working mode:', j.getInverterWorkingMode(inverterWorkingMode.hex) );
+        console.log( 'Battery type:', j.getBatteryType(batteryType.hex) );
+        console.log( 'Failure Code 1:', j.getFailureCode1(failureCode1.hex) );
+        console.log( 'Failure Code 2:', j.getFailureCode2(failureCode2.hex) );
     }
 }
 
