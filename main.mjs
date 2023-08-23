@@ -35,8 +35,8 @@ function readHandler(client, data){
         var failureCode1 = j.getParameter(parsedData.devData, 0x1000, 0x101C, 1);
         var failureCode2 = j.getParameter(parsedData.devData, 0x1000, 0x101D, 1);
         console.log( 'Main charger state:', j.getMainsChargerState(mainsChargerState.hex) );
-        console.log( 'Inverter state:', j.getInverterState(inverterState.hex) );
         console.log( 'PV charger state:', j.getPvChargerState(pvChargerState.hex) );
+        console.log( 'Inverter state:', j.getInverterState(inverterState.hex) );
         console.log( 'Inverter working mode:', j.getInverterWorkingMode(inverterWorkingMode.hex) );
         console.log( 'Battery type:', j.getBatteryType(batteryType.hex) );
         console.log( 'Failure Code 1:', j.getFailureCode1(failureCode1.hex) );

@@ -190,7 +190,11 @@ class GNFL extends JNGE {
 
     return this.#batteryType.get(data);
   }
-
+    /**
+    * @description getFailureCode1(data) Return string with status.
+    * @param number
+    * @return string
+    **/
   getFailureCode1(mask){
     //failureCode1
     //0x101C
@@ -198,16 +202,21 @@ class GNFL extends JNGE {
 
     var i = 0;
     var failerCodes = [];
-    while (mask > 0) {
+    while (mask > 0 || i < this.#failureCode1.length) {
         //console.log(msk);
         if (mask & 1) failerCodes.push(this.#failureCode1[i]);
-        mask = mask >> 1;
+        mask  >>= 1;
         i += 1;
     };
     if (failerCodes.length == 0) failerCodes.push('no errors');
     return failerCodes.toString();
 
   }
+      /**
+    * @description getFailureCode2(data) Return string with status.
+    * @param number
+    * @return string
+    **/
   getFailureCode2(mask){
     //failureCode1
     //0x101C
@@ -215,10 +224,10 @@ class GNFL extends JNGE {
 
     var i = 0;
     var failerCodes = [];
-    while (mask > 0) {
+    while ( mask > 0 || i < this.#failureCode2.length ) {
         //console.log(msk);
         if (mask & 1) failerCodes.push(this.#failureCode2[i]);
-        mask = mask >> 1;
+        mask >>= 1;
         i += 1;
     };
     if (failerCodes.length == 0) failerCodes.push('no errors');
