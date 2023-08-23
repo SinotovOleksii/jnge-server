@@ -46,26 +46,24 @@ class GNFL extends JNGE {
     this.#batteryType.set(3, "Lithium iron phosphate");
     this.#batteryType.set(4, "Customized");
 
-    this.#inverterInternalState = {
-      mask: [
-        { pos: 15, desc: "Reserved", 0: "", 1: "" },
-        { pos: 14, desc: "Reserved", 0: "", 1: "" },
-        { pos: 13, desc: "AC input slow start relay status", 0: "Open", 1: "Close"},
-        { pos: 12, desc: "Fan running status", 0: "Stop", 1: "Run" },
-        { pos: 11, desc: "EPO status", 0: "Invalid", 1: "Effective" },
-        { pos: 10, desc: "Inverter phase-locked state", 0: "Unlocked in phase", 1: "Phase-locking" },
-        { pos: 9, desc: "Bypass static switch", 0: "Open", 1: "Close" },
-        { pos: 8, desc: "DC input delay relay status", 0: "Open", 1: "Close" },
-        { pos: 7, desc: "DC Input relay status ", 0: "Open", 1: "Close" },
-        { pos: 6, desc: "Inverter relay status", 0: "Open", 1: "Close" },
-        { pos: 5, desc: "Bypass relay status", 0: "Open", 1: "Close" },
-        { pos: 4, desc: "AC Input power supply status", 0: "Stop", 1: "Run" },
-        { pos: 3, desc: "Energy-saving mode allows", 0: "Not allowed", 1: "Allow"},
-        { pos: 2, desc: "AC mains charging is allowed", 0: "Not allowed", 1: "Allow" },
-        { pos: 1, desc: "AC mains charging switch status", 0: "AC mains is charging", 1: "AC mains is not charging" },
-        { pos: 0, desc: "Command to diesel engine", 0: "Stop", 1: "Start" },
-      ],
-    };
+    this.#inverterInternalState = [
+        { desc: "Manual failure ", 0: "Disabled", 1: "Enabled"},
+        { desc: "Reserved", 0: "", 1: "" },
+        { desc: "Reserved", 0: "", 1: "" },
+        { desc: "Overload to bypass", 0: "Enabled", 1: "Disabled" },
+        { desc: "Failure clearing", 0: "No", 1: "Clear" },
+        { desc: "Alarm is turned off", 0: "No", 1: "Yes" },
+        { desc: "Single-machine or parallel", 0: "Single", 1: "Parallel" },
+        { desc: "Power on automatically", 0: "Disabled", 1: "Enabled" },
+        { desc: "EPO functionality ", 0: "Disabled", 1: "Enabled" },
+        { desc: "AC mains frequency detection", 0: "Disabled", 1: "Enabled" },
+        { desc: "Automatic battery detection", 0: "Disabled", 1: "Enabled" },
+        { desc: "Bypass relay status", 0: "Open", 1: "Close" },
+        { desc: "Energy-saving mode allows", 0: "Not allowed", 1: "Allow"},
+        { desc: "AC mains charging is allowed", 0: "Not allowed", 1: "Allow" },
+        { desc: "AC mains charging switch status", 0: "AC mains is charging", 1: "AC mains is not charging" },
+        { desc: "Command to diesel engine", 0: "Stop", 1: "Start" }
+    ];
     this.#failureCode1 =  [
         "Battery overvoltage",
         "Battery overheated",
@@ -125,7 +123,6 @@ class GNFL extends JNGE {
     };
   }
   //prepareCommand
-  //readParamsSet
     /**
     * @description getMainsChargerState(data) Return string with status. Return null if any error
     * @param number
@@ -222,19 +219,38 @@ class GNFL extends JNGE {
     //0x101C
     if (isNaN( parseInt(mask) )) return 'invalid data';
 
-    var i = 0;
+    var i = this.#failureCode2.length-1;
     var failerCodes = [];
-    while ( mask > 0 || i < this.#failureCode2.length ) {
+    while ( mask > 0 ) {
         //console.log(msk);
         if (mask & 1) failerCodes.push(this.#failureCode2[i]);
         mask >>= 1;
-        i += 1;
+        i -= 1;
     };
     if (failerCodes.length == 0) failerCodes.push('no errors');
     return failerCodes.toString();
-
   }
+    /**
+    * @description getInverterInternalState(data) Return string with status.
+    * @param number
+    * @return string
+    **/
+    getInverterInternalState(mask){
+        //{ desc: "AC input slow start relay status", 0: "Open", 1: "Close"},
+        //0x100D
+        if (isNaN( parseInt(mask) )) return 'invalid data';
 
+        var i = 0;
+        var internalState = [];
+        while ( mask > 0 || i < this.#inverterInternalState.length) {
+            //console.log(msk);
+            internalState.push(`${this.#inverterInternalState[i].desc}: ${this.#inverterInternalState[i][mask & 1]}`);
+            mask >>= 1;
+            i += 1;
+        };
+        if (internalState.length == 0) failerCodes.push('unknown');
+        return internalState.toString();
+    }
 }
 
 export default GNFL;

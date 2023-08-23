@@ -34,6 +34,7 @@ function readHandler(client, data){
         var batteryType = j.getParameter(parsedData.devData, 0x1000, 0x1012, 1);
         var failureCode1 = j.getParameter(parsedData.devData, 0x1000, 0x101C, 1);
         var failureCode2 = j.getParameter(parsedData.devData, 0x1000, 0x101D, 1);
+        var inverterInternalState = j.getParameter(parsedData.devData, 0x1000, 0x100D, 1);
         console.log( 'Main charger state:', j.getMainsChargerState(mainsChargerState.hex) );
         console.log( 'PV charger state:', j.getPvChargerState(pvChargerState.hex) );
         console.log( 'Inverter state:', j.getInverterState(inverterState.hex) );
@@ -41,6 +42,7 @@ function readHandler(client, data){
         console.log( 'Battery type:', j.getBatteryType(batteryType.hex) );
         console.log( 'Failure Code 1:', j.getFailureCode1(failureCode1.hex) );
         console.log( 'Failure Code 2:', j.getFailureCode2(failureCode2.hex) );
+        console.log( 'inverterInternalState:', j.getInverterInternalState(inverterInternalState.hex) );
     }
 }
 
