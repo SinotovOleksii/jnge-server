@@ -101,26 +101,24 @@ class GNFL extends JNGE {
         "Reserved",
         "Manual failure"
       ];
-    this.#failureCodePV = {
-      mask: [
-        { pos: 0, desc: "Battery overvoltage" },
-        { pos: 1, desc: "Battery not connected" },
-        { pos: 2, desc: "PV array overvoltage" },
-        { pos: 3, desc: "Controller short-circuit" },
-        { pos: 4, desc: "Charging overcurrent" },
-        { pos: 5, desc: "Controller overheated" },
-        { pos: 6, desc: "Battery is overheated" },
-        { pos: 7, desc: "Output overload" },
-        { pos: 8, desc: "Memory error" },
-        { pos: 9, desc: "Reserved" },
-        { pos: 10, desc: "Reserved" },
-        { pos: 11, desc: "Battery undervoltage" },
-        { pos: 12, desc: "Controller temperature sensor fails" },
-        { pos: 13, desc: "Battery temperature sensor fails" },
-        { pos: 14, desc: "PV array undervoltage" },
-        { pos: 15, desc: "Reserved" },
-      ],
-    };
+    this.#failureCodePV = [
+        "Battery overvoltage",
+        "Battery is not connected",
+        "PV array overvoltage",
+        "Controller short-circuit",
+        "Charging overcurrent",
+        "Controller overheated",
+        "Battery is overheated",
+        "Output overload",
+        "Memory error",
+        "Reserved",
+        "Reserved",
+        "Battery undervoltage",
+        "Controller temperature sensor fails",
+        "Battery temperature sensor fails",
+        "PV array undervoltage",
+        "Reserved",
+      ];
   }
   //prepareCommand
     /**
@@ -251,34 +249,30 @@ class GNFL extends JNGE {
         if (internalState.length == 0) failerCodes.push('unknown');
         return internalState.toString();
     }
+    /**
+    * @description getFailureCodePV(data) Return string with status.
+    * @param number
+    * @return string
+    **/
+     getFailureCodePV(mask){
+        //0x101E
+        if (isNaN( parseInt(mask) )) return 'invalid data';
+
+        var i = this.#failureCodePV.length-1;
+        var failerCodes = [];
+        while ( mask > 0 ) {
+            //console.log(msk);
+            if (mask & 1) failerCodes.push(this.#failureCodePV[i]);
+            mask >>= 1;
+            i -= 1;
+        };
+        if (failerCodes.length == 0) failerCodes.push('no errors');
+        return failerCodes.toString();
+     }
+
 }
 
 export default GNFL;
-
-
-/*
-  this.#failureCode1 = {
-      mask: [
-        { pos: 0, desc: "Battery overvoltage" },
-        { pos: 1, desc: "Battery overheated" },
-        { pos: 2, desc: "Charging overcurrent" },
-        { pos: 3, desc: "Charging soft start failed" },
-        { pos: 4, desc: "Inverse charge soft overcurrent" },
-        { pos: 5, desc: "Inverter overheated" },
-        { pos: 6, desc: "Inverter short circuit" },
-        { pos: 7, desc: "Output overload" },
-        { pos: 8, desc: "Memory read/write error" },
-        { pos: 9, desc: "Inverse soft start failed" },
-        { pos: 10, desc: "Battery overvoltage" },
-        { pos: 11, desc: "Inverter overvoltage" },
-        { pos: 12, desc: "Serial port communication failure" },
-        { pos: 13, desc: "Inverter hard overcurrent" },
-        { pos: 14, desc: "Inverter radiator temperature sensor fails" },
-        { pos: 15, desc: "Transformer overheated" },
-      ],
-    };
-*/
-
 
 
 

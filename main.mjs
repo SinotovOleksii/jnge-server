@@ -23,10 +23,11 @@ function readHandler(client, data){
 
     if (!parsedData) return;
     if (parsedData.devFuncCode == 0x12) {
-        //console.log('Active power:');
-        //j.getParameter(parsedData.devData, 0x1000, 0x1010, 1);
-        //console.log('PV power:');
-        //j.getParameter(parsedData.devData, 0x1000, 0x1023, 0.1);
+        console.log('Active power:', j.getParameter(parsedData.devData, 0x1000, 0x1010, 1).dec.toFixed(2));
+        console.log('PV power:', j.getParameter(parsedData.devData, 0x1000, 0x1023, 0.1).dec.toFixed(2));
+        console.log('PV panel voltage:', j.getParameter(parsedData.devData, 0x1000, 0x1020, 0.1).dec.toFixed(2));
+        console.log('Battery voltage:', j.getParameter(parsedData.devData, 0x1000, 0x1006, 0.1).dec.toFixed(2));
+        
         var mainsChargerState = j.getParameter(parsedData.devData, 0x1000, 0x1008, 1);
         var inverterState = j.getParameter(parsedData.devData, 0x1000, 0x100C, 1);
         var pvChargerState = j.getParameter(parsedData.devData, 0x1000, 0x1022, 1);
@@ -34,6 +35,7 @@ function readHandler(client, data){
         var batteryType = j.getParameter(parsedData.devData, 0x1000, 0x1012, 1);
         var failureCode1 = j.getParameter(parsedData.devData, 0x1000, 0x101C, 1);
         var failureCode2 = j.getParameter(parsedData.devData, 0x1000, 0x101D, 1);
+        var failureCodePV = j.getParameter(parsedData.devData, 0x1000, 0x101E, 1);
         var inverterInternalState = j.getParameter(parsedData.devData, 0x1000, 0x100D, 1);
         console.log( 'Main charger state:', j.getMainsChargerState(mainsChargerState.hex) );
         console.log( 'PV charger state:', j.getPvChargerState(pvChargerState.hex) );
@@ -42,7 +44,9 @@ function readHandler(client, data){
         console.log( 'Battery type:', j.getBatteryType(batteryType.hex) );
         console.log( 'Failure Code 1:', j.getFailureCode1(failureCode1.hex) );
         console.log( 'Failure Code 2:', j.getFailureCode2(failureCode2.hex) );
-        console.log( 'inverterInternalState:', j.getInverterInternalState(inverterInternalState.hex) );
+        c
+        onsole.log( 'Failure Code PV:', j.getFailureCodePV(failureCodePV.hex) );
+        //console.log( 'inverterInternalState:', j.getInverterInternalState(inverterInternalState.hex) );
     }
 }
 

@@ -114,7 +114,7 @@ class JNGE{
         var paramIdx = paramAddr - offsetAddr;
         var paramRawData = parseInt(data.subarray(paramIdx*2, paramIdx*2+2).toString('hex'), 16);
         var paramValue = paramRawData * coefficient;
-        console.log(`getParameter 0x${paramAddr.toString(16)} hex: 0x${paramRawData.toString(16)} val: ${paramValue.toFixed(2)}, coeff: ${coefficient}`);
+        //console.log(`getParameter 0x${paramAddr.toString(16)} hex: 0x${paramRawData.toString(16)} val: ${paramValue.toFixed(2)}, coeff: ${coefficient}`);
         return {'hex': paramRawData, 'dec' : paramValue};
         //return  paramValue.toFixed(2);
         //return paramValue;
