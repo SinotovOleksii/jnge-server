@@ -44,12 +44,18 @@ function readHandler(client, data){
         console.log( 'Battery type:', j.getBatteryType(batteryType.hex) );
         console.log( 'Failure Code 1:', j.getFailureCode1(failureCode1.hex) );
         console.log( 'Failure Code 2:', j.getFailureCode2(failureCode2.hex) );
-        c
-        onsole.log( 'Failure Code PV:', j.getFailureCodePV(failureCodePV.hex) );
+        console.log( 'Failure Code PV:', j.getFailureCodePV(failureCodePV.hex) );
         //console.log( 'inverterInternalState:', j.getInverterInternalState(inverterInternalState.hex) );
     }
 }
-
+setTimeout(()=>{
+    let cmd = '061210000024BCA5';
+    let rawHex = Buffer.from(cmd, 'hex');
+    tcpServer.clients.forEach((socket,addr) => {
+        tcpServer.write(addr, rawHex);
+    });
+    
+}, 10000);
 
 
 
