@@ -120,7 +120,6 @@ class GNFL extends JNGE {
         "Reserved",
       ];
   }
-  //prepareCommand
     /**
     * @description getMainsChargerState(data) Return string with status. Return null if any error
     * @param number
@@ -228,48 +227,47 @@ class GNFL extends JNGE {
     if (failerCodes.length == 0) failerCodes.push('no errors');
     return failerCodes.toString();
   }
-    /**
-    * @description getInverterInternalState(data) Return string with status.
-    * @param number
-    * @return string
-    **/
-    getInverterInternalState(mask){
-        //{ desc: "AC input slow start relay status", 0: "Open", 1: "Close"},
-        //0x100D
-        if (isNaN( parseInt(mask) )) return 'invalid data';
+/**
+* @description getInverterInternalState(data) Return string with status.
+* @param number
+* @return string
+**/
+getInverterInternalState(mask){
+    //{ desc: "AC input slow start relay status", 0: "Open", 1: "Close"},
+    //0x100D
+    if (isNaN( parseInt(mask) )) return 'invalid data';
 
-        var i = 0;
-        var internalState = [];
-        while ( mask > 0 || i < this.#inverterInternalState.length) {
-            //console.log(msk);
-            internalState.push(`${this.#inverterInternalState[i].desc}: ${this.#inverterInternalState[i][mask & 1]}`);
-            mask >>= 1;
-            i += 1;
-        };
-        if (internalState.length == 0) failerCodes.push('unknown');
-        return internalState.toString();
-    }
-    /**
-    * @description getFailureCodePV(data) Return string with status.
-    * @param number
-    * @return string
-    **/
-     getFailureCodePV(mask){
-        //0x101E
-        if (isNaN( parseInt(mask) )) return 'invalid data';
+    var i = 0;
+    var internalState = [];
+    while ( mask > 0 || i < this.#inverterInternalState.length) {
+        //console.log(msk);
+        internalState.push(`${this.#inverterInternalState[i].desc}: ${this.#inverterInternalState[i][mask & 1]}`);
+        mask >>= 1;
+        i += 1;
+    };
+    if (internalState.length == 0) failerCodes.push('unknown');
+    return internalState.toString();
+}
+/**
+* @description getFailureCodePV(data) Return string with status.
+* @param number
+* @return string
+**/
+getFailureCodePV(mask){
+//0x101E
+    if (isNaN( parseInt(mask) )) return 'invalid data';
 
-        var i = this.#failureCodePV.length-1;
-        var failerCodes = [];
-        while ( mask > 0 ) {
-            //console.log(msk);
-            if (mask & 1) failerCodes.push(this.#failureCodePV[i]);
-            mask >>= 1;
-            i -= 1;
-        };
-        if (failerCodes.length == 0) failerCodes.push('no errors');
-        return failerCodes.toString();
-     }
-
+    var i = this.#failureCodePV.length-1;
+    var failerCodes = [];
+    while ( mask > 0 ) {
+        //console.log(msk);
+        if (mask & 1) failerCodes.push(this.#failureCodePV[i]);
+        mask >>= 1;
+        i -= 1;
+    };
+    if (failerCodes.length == 0) failerCodes.push('no errors');
+    return failerCodes.toString();
+}
 }
 
 export default GNFL;
