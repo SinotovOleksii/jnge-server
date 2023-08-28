@@ -8,12 +8,15 @@
 import Connection from "./connection.mjs";
 //import JNGE from './jnge.mjs';
 import GNFL from './gnfl.mjs';
+import datasaver from './datasaver.mjs'
 
 
 const myServerAddr = '192.168.88.254';
 const myServerPort = 4309;
 const tcpServer = new Connection('tcpServer', {host:myServerAddr, port:myServerPort}, readHandler);
 const j = new GNFL('06');
+const database = new datasaver('jnge_test','jnge_test');
+if (!database.createTables()) process.exit(1);
 
 function readHandler(client, data){
     var tdate = new Date();
@@ -23,6 +26,9 @@ function readHandler(client, data){
     var parsedData = j.parseData(buf);
 
     if (!parsedData) return;
+
+    database.saveDevData(parsedData);
+
     if (parsedData.devFuncCode == 0x12) {
         console.log('Active power:', j.getParameter(parsedData.devData, 0x1000, 0x1010, 1).dec.toFixed(2));
         console.log('PV power:', j.getParameter(parsedData.devData, 0x1000, 0x1023, 0.1).dec.toFixed(2));
