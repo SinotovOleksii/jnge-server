@@ -1,8 +1,25 @@
-let a = {"devAddr":6,
-"devFuncCode":18,
-"devDataLen":76,
-"devNumber":{"type":"Buffer","data":[17,0,3,199]},
-"devData":{"type":"Buffer","data":[0,0,8,171,8,172,0,0,0,0,0,6,1,7,1,85,0,0,0,0,19,120,0,0,0,4,159,243,0,0,8,150,0,0,0,2,0,4,0,0,1,14,0,0,0,1,12,28,8,252,0,0,0,0,0,0,4,0,0,0,0,0,0,1,1,38,0,0,0,1,0,0]},
-"devCRC":{"type":"Buffer","data":[222,191]}};
+var a = {};
+var b = {};
+//console.log(a.devCRC);
 
-console.log(a.devCRC);
+var expectedObj = {
+    'devAddr'     : 0x06,
+    'devFuncCode' : 0x12,
+    'devDataLen'  : 0x4c,
+    'devNumber'   : Buffer.from('110003c7', 'hex'),
+    'devData'     : Buffer.from('0000090b090700000000000601040105000000001388000000049ff3000006e0000000020001000000eb000000010c1c08fc00000000000004000000000000010015000000000000', 'hex'),
+    'devCRC'      : Buffer.from('d6c7', 'hex')
+};
+
+for  (const [key, val] of Object.entries(expectedObj)){
+    if (Buffer.isBuffer(val)){
+        b[key] = val.toString('hex');
+    } else {
+        b[key] = val.toString();
+    }
+}
+
+console.log('a:', JSON.stringify(b));
+
+//create new class to extend connection with serialize deserialize
+//write read methods

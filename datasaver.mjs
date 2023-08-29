@@ -59,8 +59,19 @@ class dataSaver{
     };
     async saveDevData(data){
         if (!data) return false;
-        //try {JSON.parse(data.toString())} catch(e) {return false};
-        var insterText = pgFormat('INSERT INTO %I.%I (datetime, dev_data) VALUES (%s, %L)', this.#schema, this.#dataTable, Date.now()/1000, data);
+        let converterData = Object.create(data);
+
+        //convert object props to string hex
+        for  (const [key, val] of Object.entries(data)){
+            if (Buffer.isBuffer(val)){
+                converterData[key] = val.toString('hex');
+            } else {
+                converterData[key] = val;
+            }
+        }
+        
+        var insterText = pgFormat('INSERT INTO %I.%I (datetime, dev_data) VALUES (%s, %L)', this.#schema, this.#dataTable, Date.now()/1000, converterData);
+
         process.stdout.write(`${insterText}\n`);
         try {
             await this.pool.query(insterText)
