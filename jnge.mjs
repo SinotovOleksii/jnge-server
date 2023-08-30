@@ -15,11 +15,11 @@ class JNGE{
     calcCRC(data){
         var ccrc = Buffer.alloc(2, 0, 'hex');
         if (!Buffer.isBuffer(data)) {
-            console.log('calcCRC() waits for buffer hex to calc CRC');
+            process.stderr.write('calcCRC() waits for buffer hex to calc CRC\n');
             return null;
         };
         if (data.length == 0) {
-            console.log('calcCRC() waits for buffer lenght > 0');
+            process.stderr.write('calcCRC() waits for buffer lenght > 0\n');
             return null;
         };
         ccrc.writeUInt16LE((crc16modbus(data)));
@@ -32,11 +32,11 @@ class JNGE{
     */
     checkCRC(data){ 
         if (!Buffer.isBuffer(data)) {
-            console.log('checkCRC() waits for buffer hex to calc CRC');
+            process.stderr.write('checkCRC() waits for buffer hex to calc CRC\n');
             return false;
         }
         if (data.length == 0) {
-            console.log('checkCRC() waits for buffer lenght > 0');
+            process.stderr.write('checkCRC() waits for buffer lenght > 0\n');
             return false;
         };
         const dataWOcrc =  data.subarray(0, data.length - 2); //read all data without crc 
@@ -44,10 +44,10 @@ class JNGE{
         //console.log('data only: ', dataWOcrc.toString('hex'));
         //console.log('crc only: ', dataCRC.toString('hex'));
         if (Buffer.compare(this.calcCRC(dataWOcrc), dataCRC) != 0) {
-            console.log('checkCRC() return invalid crc');
+            process.stderr.write('checkCRC() return invalid crc\n');
             return false; //invalid crc
         } else {
-            console.log('checkCRC() return valid crc');
+            //process.stderr.write('checkCRC() return valid crc');
             return true;
         }
     };
@@ -58,11 +58,11 @@ class JNGE{
     */
     parseData(data){
         if (!Buffer.isBuffer(data)) {
-            console.log('parseData() waits for buffer hex to parse');
+            process.stderr.write('parseData() waits for buffer hex to parse\n');
             return null;
         }
         if (!this.checkCRC(data)) {
-            console.log('parseData() calculate invalid crc');
+            process.stderr.write('parseData() calculate invalid crc\n');
             return null;
         }
         var parsedObj; //obj to return
@@ -96,19 +96,19 @@ class JNGE{
     */
     getParameter(data, offsetAddr, paramAddr, coefficient){
         if (!Buffer.isBuffer(data)) {
-            console.log('getParameter() waits for buffer hex to calc CRC');
+            process.stderr.write('getParameter() waits for buffer hex to calc CRC\n');
             return null;
         };
         if (typeof offsetAddr != 'number' || typeof paramAddr != 'number' || typeof coefficient != 'number'){
-            console.log('getParameter() waits for Number type of values of addresses');
+            process.stderr.write('getParameter() waits for Number type of values of addresses\n');
             return null;
         }    
         if (paramAddr - offsetAddr < 0) {
-            console.log('getParameter() address of parameter can\'t be lower than offset');
+            process.stderr.write('getParameter() address of parameter can\'t be lower than offset\n');
             return null;
         }
         if (paramAddr - offsetAddr >= data.length/2) {
-            console.log('getParameter() address of parameter can\'t be biggest than data lenght');
+            process.stderr.write('getParameter() address of parameter can\'t be biggest than data lenght\n');
             return null;
         }
         var paramIdx = paramAddr - offsetAddr;

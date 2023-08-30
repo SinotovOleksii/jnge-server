@@ -1,5 +1,4 @@
-var a = {};
-var b = {};
+
 //console.log(a.devCRC);
 
 var expectedObj = {
@@ -11,6 +10,7 @@ var expectedObj = {
     'devCRC'      : Buffer.from('d6c7', 'hex')
 };
 
+var b = Object.create(expectedObj);
 for  (const [key, val] of Object.entries(expectedObj)){
     if (Buffer.isBuffer(val)){
         b[key] = val.toString('hex');
@@ -19,7 +19,9 @@ for  (const [key, val] of Object.entries(expectedObj)){
     }
 }
 
-console.log('a:', JSON.stringify(b));
+console.log('b:', JSON.stringify(b));
 
-//create new class to extend connection with serialize deserialize
+//create new class to extend datasaver with serialize deserialize
 //write read methods
+//replace console.log with process.stdout/stderr.write
+//dataSaver to fabric class

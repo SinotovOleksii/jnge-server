@@ -30,43 +30,43 @@ class TCPServer extends ConnectionImpl {
         host: options.host,
       },
       () => {
-        console.log(`Server starting at ${this.server._connectionKey}`);
+        process.stdout.write(`Server starting at ${this.server._connectionKey}\n`);
       }
     );
     this.server.on("listening", () => {
-      console.log("Server listening event.");
+      process.stdout.write("Server listening event.\n");
     });
     this.server.on("error", (err) => {
-      console.log("Server error: ", err.toString());
+      process.stderr.write(`Server error: ${err.toString()}\n`);
       //process.exit(1);
     });
     this.server.on("close", () => {
-      console.log("Server closed");
+      process.stderr.write("Server closed\n");
       //process.exit(1);
     });
     this.server.on("connection", (socket) => {
-      console.log(
-        `New connection to server from ${socket.remoteAddress}:${socket.remotePort}`
+      process.stdout.write(
+        `New connection to server from ${socket.remoteAddress}:${socket.remotePort}\n`
       );
       this.clients.set(`${socket.remoteAddress}:${socket.remotePort}`, socket); //add socet to Map
       //add eventhandlers for socket
       socket.on("close", () => {
-        console.log(
-          `Client closed ${socket.remoteAddress}:${socket.remotePort}`
+        process.stderr.write(
+          `Client closed ${socket.remoteAddress}:${socket.remotePort}\n`
         );
         this.clients.delete(`${socket.remoteAddress}:${socket.remotePort}`);
       });
       socket.on("end", () => {
-        console.log(
-          `Client ended ${socket.remoteAddress}:${socket.remotePort}`
+        process.stderr.write(
+          `Client ended ${socket.remoteAddress}:${socket.remotePort}\n`
         );
         this.clients.delete(`${socket.remoteAddress}:${socket.remotePort}`);
       });
       socket.on("error", (err) => {
-        console.log(
+        process.stderr.write(
           `Connection ${socket.remoteAddress}:${
             socket.remotePort
-          } has error: ${err.toString()}`
+          } has error: ${err.toString()}\n`
         );
         this.clients.delete(`${socket.remoteAddress}:${socket.remotePort}`);
       });
