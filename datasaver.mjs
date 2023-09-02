@@ -24,11 +24,12 @@ class pgsqlConnector{
         };
         this.pool = new Pool(initPoolObj);
         this.pool.on('connect', () => {
-            process.stdout.write(`Database pool connected.\nClient in pool: ${this.pool.totalCount}, where idle is: ${this.pool.idleCount}, waiting: ${this.pool.waitingCount}\n`);
+            process.stdout.write(`Database pool connected.\nClients in pool: ${this.pool.totalCount}, where idle is: ${this.pool.idleCount}, waiting: ${this.pool.waitingCount}\n`);
         })
         this.pool.on('error', (err, client) => {
             process.stderr.write(`Pool has an error: ${toString(err)}\n`);
             client.end();
+            process.stderr.write(`Clients in pool: ${this.pool.totalCount}, where idle is: ${this.pool.idleCount}, waiting: ${this.pool.waitingCount}\n`);
         })
     };
 

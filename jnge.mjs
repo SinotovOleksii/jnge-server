@@ -70,20 +70,26 @@ class JNGE{
             process.stderr.write(`parseData() waits for buffer lenght >= ${this.#minPacketLength}\n`);
             return null;
         };
-        var parsedObj; //obj to return
-        var addrPos=1; //standard positions of bytes
-        var funcPos=2;
-        var dataLenPos=3;
-        var devNumberPos = 7;
+        var addrPos=0; //standard positions of bytes
+        var addrLen = 1;
+        var funcPos=1;
+        var funcLen = 1;
+        var dataLenPos = 2;
+        var dataLenLen = 1;
+        var devNumberPos = 3;
         var devNumberLen = 4;
-        var devAddr, devDataLen, devCRC, devFuncCode, devData, devNumber; 
-        devAddr = data.subarray(0, addrPos).toString('hex');
-        devFuncCode = data.subarray(addrPos, funcPos).toString('hex');
-        devDataLen = parseInt(data.subarray(funcPos, dataLenPos).toString('hex'), 16);
-        devNumber = data.subarray(dataLenPos, devNumberPos);
-        devData = data.subarray(devNumberPos, devDataLen - devNumberLen + devNumberPos);
-        devCRC = data.subarray(data.length-2, data.length); //last two bytes
-        parsedObj = {
+        var msgCRCLen = 2;
+        var devAddr = data.subarray(addrPos, addrLen).toString('hex');
+        var devFuncCode = data.subarray(funcPos, funcPos + funcLen).toString('hex');
+        var devDataLen = parseInt(data.subarray(dataLenPos, dataLenPos+dataLenLen).toString('hex'), 16);
+        if (devDataLen > data.length - devNumberPos - msgCRCLen) {
+            process.stderr.write(`parseData() devDataLen ${devDataLen.toString()} is over limit msg length`);
+            return null;
+        };
+        var devNumber = data.subarray(devNumberPos, devNumberPos + devNumberLen);
+        var devData = data.subarray(devNumberPos + devNumberLen, devDataLen + devNumberPos);
+        var devCRC = data.subarray(data.length-msgCRCLen, data.length); //last two bytes
+        var parsedObj = {
             'devAddr'     : parseInt(devAddr, 16),
             'devFuncCode' : parseInt(devFuncCode, 16),
             'devDataLen'  : devDataLen,
@@ -153,3 +159,8 @@ g.getParameter(a.devData, 0x1000, 0x1011, 1);
 //061652110003c70136012a012c01200108011400cc010600d8000100030002000100069ff30439064a0b690a3e012c010400010000000001f400c80001177000fa0000000000000000000000000000000000000000b451
 //06124c110003c70000090b090700000000000601040105000000001388000000049ff3000006e0000000020001000000eb000000010c1c08fc00000000000004000000000000010015000000000000d6c7
 //06180831000067102A093C2A86
+
+//06 18 08 4c 11 00 03 11 11 FF FF EA 3E - correct response
+//06 18 01 4c 11 00 03 11 11 FF FF 80 6E  -set data len to 1
+//06 18 00 4c 11 00 03 CF FC 76 44 - set data len to 0
+//06 18 43 4c 11 00 03 11 11 FF FF A8 CD - over limit data len

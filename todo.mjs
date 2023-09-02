@@ -21,7 +21,9 @@ for  (const [key, val] of Object.entries(expectedObj)){
 
 console.log('b:', JSON.stringify(b));
 
-//create new class to extend datasaver with serialize deserialize
+//create tests for gnfl
+//create tests for datasaver
+//+create new class to extend datasaver with serialize deserialize
 //write read methods
 //+replace console.log with process.stdout/stderr.write
 //dataSaver to fabric class

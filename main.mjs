@@ -30,7 +30,6 @@ function readHandler(client, data){
     process.stdout.write(`${tdate}: Data from main: ${client}: ${data}\n`);
     var buf = Buffer.from(data, 'hex');
     var parsedData = j.parseData(buf);
-
     if (!parsedData) return;
 
     database.saveDevData(parsedData);
