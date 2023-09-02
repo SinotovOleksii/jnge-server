@@ -20,7 +20,7 @@ for  (const [key, val] of Object.entries(expectedObj)){
 }
 
 console.log('b:', JSON.stringify(b));
-
+//from www
 //add from pc
 //create tests for gnfl and dont fuck this
 //fuck this if any
