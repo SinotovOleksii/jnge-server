@@ -15,8 +15,14 @@ const myServerAddr = '192.168.88.254';
 const myServerPort = 4309;
 const tcpServer = new Connection('tcpServer', {host:myServerAddr, port:myServerPort}, readHandler);
 const j = new GNFL('06');
-const database = new datasaver('jnge_test','jnge_test');
-if (!database.createTables()) process.exit(1);
+const databaseParams = {
+    schemaName: 'jnge_test',
+    dataTable: 'device_messages',
+    usersTable: 'users'
+};
+const database = new datasaver('jnge_test',databaseParams);
+if (!database.createTables()) { process.exit(1) }
+    else { process.stdout.write(`Database created success.\n`) };
 
 function readHandler(client, data){
     var tdate = new Date();
