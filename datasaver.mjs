@@ -23,7 +23,8 @@ class dataSaver{
         this.#schema = schema;
         const initPoolObj = {
             application_name: appalicationName,
-            max: 10
+            max: 10,
+            idleTimeoutMillis: 0,
         };
         this.pool = new Pool(initPoolObj);
         this.pool.on('connect', () => {

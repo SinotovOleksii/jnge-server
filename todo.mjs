@@ -23,5 +23,6 @@ console.log('b:', JSON.stringify(b));
 
 //create new class to extend datasaver with serialize deserialize
 //write read methods
-//replace console.log with process.stdout/stderr.write
+//+replace console.log with process.stdout/stderr.write
 //dataSaver to fabric class
+//add partitioning to the dataSaver

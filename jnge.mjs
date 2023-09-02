@@ -4,6 +4,7 @@ import { Buffer } from 'node:buffer';
 
 class JNGE{
     #devAddress;
+    #minPacketLength = 8;
     constructor(devAddress){
         this.#devAddress = devAddress;
     };
@@ -18,8 +19,8 @@ class JNGE{
             process.stderr.write('calcCRC() waits for buffer hex to calc CRC\n');
             return null;
         };
-        if (data.length == 0) {
-            process.stderr.write('calcCRC() waits for buffer lenght > 0\n');
+        if (data.length < 2) {
+            process.stderr.write('calcCRC() waits for buffer lenght > 1\n');
             return null;
         };
         ccrc.writeUInt16LE((crc16modbus(data)));
@@ -35,8 +36,8 @@ class JNGE{
             process.stderr.write('checkCRC() waits for buffer hex to calc CRC\n');
             return false;
         }
-        if (data.length == 0) {
-            process.stderr.write('checkCRC() waits for buffer lenght > 0\n');
+        if (data.length < 4) {
+            process.stderr.write('checkCRC() waits for buffer lenght > 3\n');
             return false;
         };
         const dataWOcrc =  data.subarray(0, data.length - 2); //read all data without crc 
@@ -65,8 +66,12 @@ class JNGE{
             process.stderr.write('parseData() calculate invalid crc\n');
             return null;
         }
+        if (data.length < this.#minPacketLength) {
+            process.stderr.write(`parseData() waits for buffer lenght >= ${this.#minPacketLength}\n`);
+            return null;
+        };
         var parsedObj; //obj to return
-        var addrPos=1; //standard position of bytes
+        var addrPos=1; //standard positions of bytes
         var funcPos=2;
         var dataLenPos=3;
         var devNumberPos = 7;
