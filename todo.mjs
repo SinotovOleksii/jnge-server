@@ -20,10 +20,8 @@ for  (const [key, val] of Object.entries(expectedObj)){
 }
 
 console.log('b:', JSON.stringify(b));
-//from www2233355
-//add from pc
-//create tests for gnfl and dont fuck this
-//fuck this if any
+
+//create tests for gnfl 
 //create tests for datasaver
 //+create new class to extend datasaver with serialize deserialize
 //write read methods

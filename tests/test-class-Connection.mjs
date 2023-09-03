@@ -1,6 +1,6 @@
 import Connection from "../connection.mjs";
 import  net  from 'node:net'; 
-import { describe, it, before } from 'node:test';
+import { describe, it} from 'node:test';
 import assert from 'node:assert';
 import { Buffer } from 'node:buffer';
 

@@ -127,7 +127,6 @@ class GNFL extends JNGE {
     **/
   getMainsChargerState(data){
     //0x1008 
-    //console.log('getMainsChargerState work with:', data);
     if (isNaN( parseInt(data) )) return 'invalid data';
     if (!this.#mainsChargerState.has( data )) return 'unknown';
 
@@ -140,7 +139,6 @@ class GNFL extends JNGE {
     **/
   getInverterState(data){
     //0x100C
-    //console.log('getInverterState work with:', data);
     if (isNaN( parseInt(data) )) return 'invalid data';
     if (!this.#inverterState.has( data )) return 'unknown';
 
@@ -178,7 +176,6 @@ class GNFL extends JNGE {
     **/
   getBatteryType(data){
     //batteryType 0x1012
-    //console.log('getBatteryType work with:', data);
     if (isNaN( parseInt(data) )) return 'invalid data';
     if (!this.#batteryType.has( data )) return 'unknown';
 
@@ -190,9 +187,9 @@ class GNFL extends JNGE {
     * @return string
     **/
   getFailureCode1(mask){
-    //failureCode1
-    //0x101C
+    //failureCode1 0x101C
     if (isNaN( parseInt(mask) )) return 'invalid data';
+    if (mask > 0xFFFF) return 'invalid data';
 
     var i = 0;
     var failerCodes = [];
@@ -212,14 +209,13 @@ class GNFL extends JNGE {
     * @return string
     **/
   getFailureCode2(mask){
-    //failureCode1
-    //0x101C
+    //failureCode1 0x101C
     if (isNaN( parseInt(mask) )) return 'invalid data';
+    if (mask > 0xFFFF) return 'invalid data';
 
     var i = this.#failureCode2.length-1;
     var failerCodes = [];
     while ( mask > 0 ) {
-        //console.log(msk);
         if (mask & 1) failerCodes.push(this.#failureCode2[i]);
         mask >>= 1;
         i -= 1;
@@ -233,14 +229,13 @@ class GNFL extends JNGE {
 * @return string
 **/
 getInverterInternalState(mask){
-    //{ desc: "AC input slow start relay status", 0: "Open", 1: "Close"},
     //0x100D
     if (isNaN( parseInt(mask) )) return 'invalid data';
+    if (mask > 0xFFFF) return 'invalid data';
 
     var i = 0;
     var internalState = [];
     while ( mask > 0 || i < this.#inverterInternalState.length) {
-        //console.log(msk);
         internalState.push(`${this.#inverterInternalState[i].desc}: ${this.#inverterInternalState[i][mask & 1]}`);
         mask >>= 1;
         i += 1;
@@ -256,11 +251,11 @@ getInverterInternalState(mask){
 getFailureCodePV(mask){
 //0x101E
     if (isNaN( parseInt(mask) )) return 'invalid data';
-
+    if (mask > 0xFFFF) return 'invalid data';
+    
     var i = this.#failureCodePV.length-1;
     var failerCodes = [];
     while ( mask > 0 ) {
-        //console.log(msk);
         if (mask & 1) failerCodes.push(this.#failureCodePV[i]);
         mask >>= 1;
         i -= 1;
