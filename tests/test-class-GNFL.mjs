@@ -3,9 +3,6 @@ import  assert  from 'node:assert';
 import { describe, it } from 'node:test';
 
 const gnfl = new GNFL('06');
-const validData = Buffer.from('06124c110003c708f7090008ee13870000007400ff0155000000001378000000039ff300000900010a00020004000000ff000000010c1c08fc000000000000000000000000000102e2001e000103000e2e', 'hex');
-const parsedData = gnfl.parseData(validData);
-const invalidData = Buffer.from('084c1100031111FFFF', 'hex')
 
 describe('Test for class GNFL', ()=>{
     describe('Test getters', () => {
