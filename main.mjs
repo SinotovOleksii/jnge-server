@@ -20,7 +20,7 @@ const databaseParams = {
     dataTable: 'device_messages',
     usersTable: 'users'
 };
-const database = new datasaver('jnge_test',databaseParams);
+const database = new datasaver('jnge_test', databaseParams);
 if (!database.createTables()) { process.exit(1) }
     else { process.stdout.write(`Database created success.\n`) };
 
