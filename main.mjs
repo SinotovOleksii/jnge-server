@@ -1,14 +1,5 @@
-/*
--tcp server
--client auth
--database connection
--hex data parser
-
-*/
-
 import process from 'node:process';
 import Connection from './connection.mjs';
-//import JNGE from './jnge.mjs';
 import GNFL from './gnfl.mjs';
 import datasaver from './datasaver.mjs';
 import { Buffer } from 'node:buffer';

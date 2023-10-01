@@ -5,6 +5,7 @@ const { Pool } = pg;
 import pgFormat from 'pg-format';
 import process from 'node:process';
 import { Buffer } from 'node:buffer';
+import { inspect } from 'node:util';
 
 class pgsqlConnector{
   pool;
@@ -78,9 +79,9 @@ class dataSaver  extends pgsqlConnector{
      */
   constructor(appalicationName, schema){
     let checkProp = Object.prototype.hasOwnProperty;
-    if ( !schema || typeof(schema) != 'object' ) throw new Error(`dataSaver constructor error in schema object: ${toString(schema)}`);
-    if ( !checkProp.call(schema, 'schemaName') || checkProp.call(schema,'dataTable') || !checkProp.call(schema,'usersTable') )
-      throw new Error(`dataSaver constructor error in schema object: ${toString(schema)}`);
+    if ( !schema || typeof(schema) != 'object' ) throw new Error(`dataSaver constructor error in schema object: ${inspect(schema)}`);
+    if ( !checkProp.call(schema, 'schemaName') || !checkProp.call(schema, 'dataTable') || !checkProp.call(schema, 'usersTable') )
+      throw new Error(`dataSaver constructor error in schema object: ${inspect(schema)}`);
 
     super(appalicationName);
     this.#schema = schema;
