@@ -1,6 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import JNGE from '../jnge.mjs';
+import { Buffer } from 'node:buffer';
 
 describe('Tests for JNGE class', () => {
   const jn = new JNGE('06');
@@ -44,7 +45,7 @@ describe('Tests for JNGE class', () => {
       var parsedObj = jn.parseData(Buffer.from('06180831000067102A093C2A86', 'hex'));
       var expectedObj = null;
       assert.deepEqual(parsedObj, expectedObj);
-    })
+    });
     
     it('Test parseData() with valid data', () => {
       var parsedObj = jn.parseData(Buffer.from('06124c110003c70000090b090700000000000601040105000000001388000000049ff3000006e0000000020001000000eb000000010c1c08fc00000000000004000000000000010015000000000000d6c7', 'hex'));
@@ -55,7 +56,7 @@ describe('Tests for JNGE class', () => {
         'devNumber'   : Buffer.from('110003c7', 'hex'),
         'devData'     : Buffer.from('0000090b090700000000000601040105000000001388000000049ff3000006e0000000020001000000eb000000010c1c08fc00000000000004000000000000010015000000000000', 'hex'),
         'devCRC'      : Buffer.from('d6c7', 'hex')
-    };
+      };
       assert.deepEqual(parsedObj, expectedObj);
     });
 
@@ -108,7 +109,7 @@ describe('Tests for JNGE class', () => {
       parsedValue = jn.getParameter('06124c110003c7090108f50901138700000057011e0156', 0x1000, 0x1023, 0.1);
       assert.deepEqual(parsedValue, expectedVal);
     });
-  })
+  });
 }); 
 
               

@@ -1,4 +1,5 @@
-import net from "node:net";
+import net from 'node:net';
+import process from 'node:process';
 
 class ConnectionImpl {
   constructor() {}
@@ -12,7 +13,7 @@ class TCPServer extends ConnectionImpl {
   server;
   clients = new Map();
   readCallback;
-  connectionType = "tcpServer";
+  connectionType = 'tcpServer';
   /**
    * Constructor
    * @param {options} object with property: host, port, readCallback
@@ -33,36 +34,36 @@ class TCPServer extends ConnectionImpl {
         process.stdout.write(`Server starting at ${this.server._connectionKey}\n`);
       }
     );
-    this.server.on("listening", () => {
-      process.stdout.write("Server listening event.\n");
+    this.server.on('listening', () => {
+      process.stdout.write('Server listening event.\n');
     });
-    this.server.on("error", (err) => {
+    this.server.on('error', (err) => {
       process.stderr.write(`Server error: ${err.toString()}\n`);
       //process.exit(1);
     });
-    this.server.on("close", () => {
-      process.stderr.write("Server closed\n");
+    this.server.on('close', () => {
+      process.stderr.write('Server closed\n');
       //process.exit(1);
     });
-    this.server.on("connection", (socket) => {
+    this.server.on('connection', (socket) => {
       process.stdout.write(
         `New connection to server from ${socket.remoteAddress}:${socket.remotePort}\n`
       );
       this.clients.set(`${socket.remoteAddress}:${socket.remotePort}`, socket); //add socet to Map
       //add eventhandlers for socket
-      socket.on("close", () => {
+      socket.on('close', () => {
         process.stderr.write(
           `Client closed ${socket.remoteAddress}:${socket.remotePort}\n`
         );
         this.clients.delete(`${socket.remoteAddress}:${socket.remotePort}`);
       });
-      socket.on("end", () => {
+      socket.on('end', () => {
         process.stderr.write(
           `Client ended ${socket.remoteAddress}:${socket.remotePort}\n`
         );
         this.clients.delete(`${socket.remoteAddress}:${socket.remotePort}`);
       });
-      socket.on("error", (err) => {
+      socket.on('error', (err) => {
         process.stderr.write(
           `Connection ${socket.remoteAddress}:${
             socket.remotePort
@@ -70,9 +71,9 @@ class TCPServer extends ConnectionImpl {
         );
         this.clients.delete(`${socket.remoteAddress}:${socket.remotePort}`);
       });
-      socket.on("data", (chunk) => {
+      socket.on('data', (chunk) => {
         var client = `${socket.remoteAddress}:${socket.remotePort}`;
-        var data = chunk.toString("hex");
+        var data = chunk.toString('hex');
         return this.read(client, data);
       });
     });
@@ -84,7 +85,7 @@ class TCPServer extends ConnectionImpl {
     socket.write(data);
   }
   stop() {
-    this.clients.forEach((client, key) => {
+    this.clients.forEach((client) => {
       client.destroy();
     });
     this.server.close();
@@ -99,11 +100,11 @@ class Connection {
    */
   constructor(connectionType, connectionOption, readCallback) {
     switch (connectionType) {
-      case "tcpServer":
-        return new TCPServer(connectionOption, readCallback);
+    case 'tcpServer':
+      return new TCPServer(connectionOption, readCallback);
 
-      default:
-        return new ConnectionImpl();
+    default:
+      return new ConnectionImpl();
     }
   }
 }

@@ -1,136 +1,136 @@
 import  crc16modbus  from 'crc/crc16modbus';
 import { Buffer } from 'node:buffer';
-
+import process from 'node:process';
 
 class JNGE{
-    #devAddress;
-    #minPacketLength = 8;
-    constructor(devAddress){
-        this.#devAddress = devAddress;
-    };
-    /**
+  #devAddress;
+  #minPacketLength = 8;
+  constructor(devAddress){
+    this.#devAddress = devAddress;
+  }
+  /**
     * @description calcCRC(Buffer) calculate crc for buffer data
     * @param {Buffer} 
     * @return {Buffer} crc16modbus
     */
-    calcCRC(data){
-        var ccrc = Buffer.alloc(2, 0, 'hex');
-        if (!Buffer.isBuffer(data)) {
-            process.stderr.write('calcCRC() waits for buffer hex to calc CRC\n');
-            return null;
-        };
-        if (data.length < 2) {
-            process.stderr.write('calcCRC() waits for buffer lenght > 1\n');
-            return null;
-        };
-        ccrc.writeUInt16LE((crc16modbus(data)));
-        return ccrc;
-    };
-    /**
+  calcCRC(data){
+    var ccrc = Buffer.alloc(2, 0, 'hex');
+    if (!Buffer.isBuffer(data)) {
+      process.stderr.write('calcCRC() waits for buffer hex to calc CRC\n');
+      return null;
+    }
+    if (data.length < 2) {
+      process.stderr.write('calcCRC() waits for buffer lenght > 1\n');
+      return null;
+    }
+    ccrc.writeUInt16LE((crc16modbus(data)));
+    return ccrc;
+  }
+  /**
     * @description checkCRC(Buffer) check if crc is valid for buffer data (crc must be at last two bytes)
     * @param {Buffer} 
     * @return {boolean} boolean
     */
-    checkCRC(data){ 
-        if (!Buffer.isBuffer(data)) {
-            process.stderr.write('checkCRC() waits for buffer hex to calc CRC\n');
-            return false;
-        }
-        if (data.length < 4) {
-            process.stderr.write('checkCRC() waits for buffer lenght > 3\n');
-            return false;
-        };
-        const dataWOcrc =  data.subarray(0, data.length - 2); //read all data without crc 
-        const dataCRC = data.subarray(data.length - 2, data.length); //read only CRC 2 bytes
-        //console.log('data only: ', dataWOcrc.toString('hex'));
-        //console.log('crc only: ', dataCRC.toString('hex'));
-        if (Buffer.compare(this.calcCRC(dataWOcrc), dataCRC) != 0) {
-            process.stderr.write('checkCRC() return invalid crc\n');
-            return false; //invalid crc
-        } else {
-            //process.stderr.write('checkCRC() return valid crc');
-            return true;
-        }
-    };
-    /**
+  checkCRC(data){ 
+    if (!Buffer.isBuffer(data)) {
+      process.stderr.write('checkCRC() waits for buffer hex to calc CRC\n');
+      return false;
+    }
+    if (data.length < 4) {
+      process.stderr.write('checkCRC() waits for buffer lenght > 3\n');
+      return false;
+    }
+    const dataWOcrc =  data.subarray(0, data.length - 2); //read all data without crc 
+    const dataCRC = data.subarray(data.length - 2, data.length); //read only CRC 2 bytes
+    //console.log('data only: ', dataWOcrc.toString('hex'));
+    //console.log('crc only: ', dataCRC.toString('hex'));
+    if (Buffer.compare(this.calcCRC(dataWOcrc), dataCRC) != 0) {
+      process.stderr.write('checkCRC() return invalid crc\n');
+      return false; //invalid crc
+    } else {
+      //process.stderr.write('checkCRC() return valid crc');
+      return true;
+    }
+  }
+  /**
     * @description parseData(Buffer) parsing data from device to object. Return null if any error
     * @param {Buffer} 
     * @return {object} {'devAddr', 'devFuncCode', 'devDataLen', 'devNumber', 'devData', 'devCRC'}
     */
-    parseData(data){
-        if (!Buffer.isBuffer(data)) {
-            process.stderr.write('parseData() waits for buffer hex to parse\n');
-            return null;
-        }
-        if (!this.checkCRC(data)) {
-            process.stderr.write('parseData() calculate invalid crc\n');
-            return null;
-        }
-        if (data.length < this.#minPacketLength) {
-            process.stderr.write(`parseData() waits for buffer lenght >= ${this.#minPacketLength}\n`);
-            return null;
-        };
-        var addrPos=0; //standard positions of bytes
-        var addrLen = 1;
-        var funcPos=1;
-        var funcLen = 1;
-        var dataLenPos = 2;
-        var dataLenLen = 1;
-        var devNumberPos = 3;
-        var devNumberLen = 4;
-        var msgCRCLen = 2;
-        var devAddr = data.subarray(addrPos, addrLen).toString('hex');
-        var devFuncCode = data.subarray(funcPos, funcPos + funcLen).toString('hex');
-        var devDataLen = parseInt(data.subarray(dataLenPos, dataLenPos+dataLenLen).toString('hex'), 16);
-        if (devDataLen > data.length - devNumberPos - msgCRCLen) {
-            process.stderr.write(`parseData() devDataLen ${devDataLen.toString()} is over limit msg length`);
-            return null;
-        };
-        var devNumber = data.subarray(devNumberPos, devNumberPos + devNumberLen);
-        var devData = data.subarray(devNumberPos + devNumberLen, devDataLen + devNumberPos);
-        var devCRC = data.subarray(data.length-msgCRCLen, data.length); //last two bytes
-        var parsedObj = {
-            'devAddr'     : parseInt(devAddr, 16),
-            'devFuncCode' : parseInt(devFuncCode, 16),
-            'devDataLen'  : devDataLen,
-            'devNumber'   : devNumber,
-            'devData'     : devData,
-            'devCRC'      : devCRC
-        };
-        return parsedObj;
-
+  parseData(data){
+    if (!Buffer.isBuffer(data)) {
+      process.stderr.write('parseData() waits for buffer hex to parse\n');
+      return null;
+    }
+    if (!this.checkCRC(data)) {
+      process.stderr.write('parseData() calculate invalid crc\n');
+      return null;
+    }
+    if (data.length < this.#minPacketLength) {
+      process.stderr.write(`parseData() waits for buffer lenght >= ${this.#minPacketLength}\n`);
+      return null;
+    }
+    var addrPos=0; //standard positions of bytes
+    var addrLen = 1;
+    var funcPos=1;
+    var funcLen = 1;
+    var dataLenPos = 2;
+    var dataLenLen = 1;
+    var devNumberPos = 3;
+    var devNumberLen = 4;
+    var msgCRCLen = 2;
+    var devAddr = data.subarray(addrPos, addrLen).toString('hex');
+    var devFuncCode = data.subarray(funcPos, funcPos + funcLen).toString('hex');
+    var devDataLen = parseInt(data.subarray(dataLenPos, dataLenPos+dataLenLen).toString('hex'), 16);
+    if (devDataLen > data.length - devNumberPos - msgCRCLen) {
+      process.stderr.write(`parseData() devDataLen ${devDataLen.toString()} is over limit msg length`);
+      return null;
+    }
+    var devNumber = data.subarray(devNumberPos, devNumberPos + devNumberLen);
+    var devData = data.subarray(devNumberPos + devNumberLen, devDataLen + devNumberPos);
+    var devCRC = data.subarray(data.length-msgCRCLen, data.length); //last two bytes
+    var parsedObj = {
+      'devAddr'     : parseInt(devAddr, 16),
+      'devFuncCode' : parseInt(devFuncCode, 16),
+      'devDataLen'  : devDataLen,
+      'devNumber'   : devNumber,
+      'devData'     : devData,
+      'devCRC'      : devCRC
     };
-    /**
+    return parsedObj;
+
+  }
+  /**
     * @description getParameter(Buffer, number, number, number) parsing data from device data value to readeble format. Return null if any error
     * @param {Buffer, number, number, number} 
     * @return object { 'hex': string, 'dec' : int }
     */
-    getParameter(data, offsetAddr, paramAddr, coefficient){
-        if (!Buffer.isBuffer(data)) {
-            process.stderr.write('getParameter() waits for buffer hex to calc CRC\n');
-            return null;
-        };
-        if (typeof offsetAddr != 'number' || typeof paramAddr != 'number' || typeof coefficient != 'number'){
-            process.stderr.write('getParameter() waits for Number type of values of addresses\n');
-            return null;
-        }    
-        if (paramAddr - offsetAddr < 0) {
-            process.stderr.write('getParameter() address of parameter can\'t be lower than offset\n');
-            return null;
-        }
-        if (paramAddr - offsetAddr >= data.length/2) {
-            process.stderr.write('getParameter() address of parameter can\'t be biggest than data lenght\n');
-            return null;
-        }
-        var paramIdx = paramAddr - offsetAddr;
-        var paramRawData = parseInt(data.subarray(paramIdx*2, paramIdx*2+2).toString('hex'), 16);
-        var paramValue = paramRawData * coefficient;
-        //console.log(`getParameter 0x${paramAddr.toString(16)} hex: 0x${paramRawData.toString(16)} val: ${paramValue.toFixed(2)}, coeff: ${coefficient}`);
-        return {'hex': paramRawData, 'dec' : paramValue};
-        //return  paramValue.toFixed(2);
-        //return paramValue;
-    };
-};
+  getParameter(data, offsetAddr, paramAddr, coefficient){
+    if (!Buffer.isBuffer(data)) {
+      process.stderr.write('getParameter() waits for buffer hex to calc CRC\n');
+      return null;
+    }
+    if (typeof offsetAddr != 'number' || typeof paramAddr != 'number' || typeof coefficient != 'number'){
+      process.stderr.write('getParameter() waits for Number type of values of addresses\n');
+      return null;
+    }    
+    if (paramAddr - offsetAddr < 0) {
+      process.stderr.write('getParameter() address of parameter can\'t be lower than offset\n');
+      return null;
+    }
+    if (paramAddr - offsetAddr >= data.length/2) {
+      process.stderr.write('getParameter() address of parameter can\'t be biggest than data lenght\n');
+      return null;
+    }
+    var paramIdx = paramAddr - offsetAddr;
+    var paramRawData = parseInt(data.subarray(paramIdx*2, paramIdx*2+2).toString('hex'), 16);
+    var paramValue = paramRawData * coefficient;
+    //console.log(`getParameter 0x${paramAddr.toString(16)} hex: 0x${paramRawData.toString(16)} val: ${paramValue.toFixed(2)}, coeff: ${coefficient}`);
+    return {'hex': paramRawData, 'dec' : paramValue};
+    //return  paramValue.toFixed(2);
+    //return paramValue;
+  }
+}
 
 export default JNGE;
 
