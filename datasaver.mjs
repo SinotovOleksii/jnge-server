@@ -30,6 +30,10 @@ class pgsqlConnector{
         });
     }
 
+    async end(){
+        this.pool.end();
+    }
+
     async query(queryText) {
         try {
             var result  = await this.pool.query(queryText);

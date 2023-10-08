@@ -6,3 +6,4 @@
 //+replace console.log with process.stdout/stderr.write
 //+dataSaver to fabric class
 //add partitioning to the dataSaver
+
