@@ -34,38 +34,49 @@ function readHandler(client, data){
 
 
     if (parsedData.devFuncCode == 0x12) {
-        process.stdout.write(`Active power: ${j.getParameter(parsedData.devData, 0x1000, 0x1010, 1).dec.toFixed(2)}\n`);
-        process.stdout.write(`PV power: ${j.getParameter(parsedData.devData, 0x1000, 0x1023, 0.1).dec.toFixed(2)}\n`);
-        process.stdout.write(`PV panel voltage: ${j.getParameter(parsedData.devData, 0x1000, 0x1020, 0.1).dec.toFixed(2)}\n`);
-        process.stdout.write(`Battery voltage: ${j.getParameter(parsedData.devData, 0x1000, 0x1006, 0.1).dec.toFixed(2)}\n`);
-        process.stdout.write(`Total discharge: ${j.getParameter(parsedData.devData, 0x1000, 0x100F, 0.1).dec.toFixed(2)}\n`);
         var mainsChargerState = j.getParameter(parsedData.devData, 0x1000, 0x1008, 1);
         var inverterState = j.getParameter(parsedData.devData, 0x1000, 0x100C, 1);
         var pvChargerState = j.getParameter(parsedData.devData, 0x1000, 0x1022, 1);
         var inverterWorkingMode = j.getParameter(parsedData.devData, 0x1000, 0x1004, 1);
-        var batteryType = j.getParameter(parsedData.devData, 0x1000, 0x1012, 1);
         var failureCode1 = j.getParameter(parsedData.devData, 0x1000, 0x101C, 1);
         var failureCode2 = j.getParameter(parsedData.devData, 0x1000, 0x101D, 1);
         var failureCodePV = j.getParameter(parsedData.devData, 0x1000, 0x101E, 1);
         // var inverterInternalState = j.getParameter(parsedData.devData, 0x1000, 0x100D, 1);
-        var batteryTemperaturePoint = j.getParameter(parsedData.devData, 0x1000, 0x1013, 1);
         var batteryTemperature = j.getParameter(parsedData.devData, 0x1000, 0x1014, 0.1);
+
+        process.stdout.write('--------------------------------------------------\n');
+        process.stdout.write(`Load voltage: ${j.getParameter(parsedData.devData, 0x1000, 0x1002, 0.1).dec.toFixed(0)}\n`);
+        process.stdout.write(`Municipal electric voltage: ${j.getParameter(parsedData.devData, 0x1000, 0x1001, 0.1).dec.toFixed(0)}\n`);
+        process.stdout.write(`Inverse voltage: ${j.getParameter(parsedData.devData, 0x1000, 0x1000, 0.1).dec.toFixed(0)}\n`);
+        process.stdout.write('--------------------------------------------------\n');
+        process.stdout.write(`Voltage level: ${j.getParameter(parsedData.devData, 0x1000, 0x1019, 0.1).dec.toFixed(0)}\n`);
+        process.stdout.write(`Current level: ${j.getParameter(parsedData.devData, 0x1000, 0x101A, 0.01).dec.toFixed(0)}\n`);
+        process.stdout.write(`Inverse voltage setting: ${j.getParameter(parsedData.devData, 0x1000, 0x1018, 0.1).dec.toFixed(0)}\n`);
+        process.stdout.write('--------------------------------------------------\n');
+        process.stdout.write(`Active power: ${j.getParameter(parsedData.devData, 0x1000, 0x1010, 1).dec.toFixed(2)}\n`);
+        process.stdout.write(`PV power: ${j.getParameter(parsedData.devData, 0x1000, 0x1023, 0.1).dec.toFixed(2)}\n`);
+        process.stdout.write('--------------------------------------------------\n');
+        process.stdout.write(`PV panel voltage: ${j.getParameter(parsedData.devData, 0x1000, 0x1020, 0.1).dec.toFixed(2)}\n`);
+        process.stdout.write(`Battery voltage: ${j.getParameter(parsedData.devData, 0x1000, 0x1006, 0.1).dec.toFixed(2)}\n`);
+        process.stdout.write( `Battery temp: ${batteryTemperature.dec.toFixed(1)}\n` );
+        process.stdout.write('--------------------------------------------------\n');
+        process.stdout.write(`Total discharge: ${j.getParameter(parsedData.devData, 0x1000, 0x100F, 0.1).dec.toFixed(2)}\n`);
+
+        process.stdout.write('--------------------------------------------------\n');
         process.stdout.write( `Main charger state: ${j.getMainsChargerState(mainsChargerState.hex)}\n` );
         process.stdout.write( `PV charger state: ${j.getPvChargerState(pvChargerState.hex)}\n` );
-        process.stdout.write( `Battery temp: ${batteryTemperature.dec.toFixed(1)}\n` );
-        process.stdout.write( `Battery temp compensation point: ${batteryTemperaturePoint.dec}\n` );
         process.stdout.write( `Inverter state: ${j.getInverterState(inverterState.hex)}\n` );
         process.stdout.write( `Inverter working mode: ${j.getInverterWorkingMode(inverterWorkingMode.hex)}\n` );
-        process.stdout.write( `Battery type: ${j.getBatteryType(batteryType.hex)}\n` );
         process.stdout.write( `Failure Code 1: ${j.getFailureCode1(failureCode1.hex)}\n` );
         process.stdout.write( `Failure Code 2: ${j.getFailureCode2(failureCode2.hex)}\n` );
         process.stdout.write( `Failure Code PV: ${j.getFailureCodePV(failureCodePV.hex)}\n` );
-
     //process.stdout.write( 'inverterInternalState:', j.getInverterInternalState(inverterInternalState.hex) );
     }
     if (parsedData.devFuncCode == 0x16) {
         var mainsChargeRate = j.getParameter(parsedData.devData, 0x1024, 0x103F, 0.01);
         process.stdout.write( `Mains Charge Rate: ${mainsChargeRate.dec.toFixed(1)}\n` );
+        var fullRestartV = j.getParameter(parsedData.devData, 0x1024, 0x1040, 0.1);
+        process.stdout.write( `Full of the restart V: ${fullRestartV.dec.toFixed(1)}\n` );
     }
 }
 setInterval(()=>{

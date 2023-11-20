@@ -1,51 +1,26 @@
 import JNGE from './jnge.mjs';
 
 class GNFL extends JNGE {
-    currentInverterState = 0;
-    currentChargerState = 0;
-    currentMPPTstate = 0;
-    #inverterWorkingMode = new Map();
-    #batteryType = new Map();
-    #inverterInternalState;
-    #failureCode1;
-    #failureCode2;
-    #failureCodePV;
-    #inverterState = new Map();
-    #pvChargerState = new Map();
-    #mainsChargerState = new Map();
-    constructor(devAddress) {
-        super(devAddress);
+    //currentInverterState = 0;
+    //currentChargerState = 0;
+    //currentMPPTstate = 0;
+    static #inverterWorkingMode = new Map();
+    static {
         this.#inverterWorkingMode.set(0, 'Smart mode');
         this.#inverterWorkingMode.set(1, 'Battery priority mode');
         this.#inverterWorkingMode.set(2, 'Municipal power priority mode' );
         this.#inverterWorkingMode.set(3, 'Energy-saving mode');
-
-        this.#inverterState.set(0, 'Standby');
-        this.#inverterState.set(1, 'Municipal electric charging soft start');
-        this.#inverterState.set(2, 'The inverter has a soft start');
-        this.#inverterState.set(3, 'Inverse runs normally');
-        this.#inverterState.set(4, 'Municipal power bypass');
-        this.#inverterState.set(5, 'Charging of municipal power bypass');
-        this.#inverterState.set(6, 'Failure mode');
-        this.#inverterState.set(7, 'Commissioning mode');
-
-        this.#mainsChargerState.set(0, 'Standby');
-        this.#mainsChargerState.set(1, 'Constant charge');
-        this.#mainsChargerState.set(2, 'Raise the charging');
-        this.#mainsChargerState.set(3, 'Full of it');
-
-        this.#pvChargerState.set(0, 'Does not charge');
-        this.#pvChargerState.set(1, 'MPPT charging');
-        this.#pvChargerState.set(2, 'Boost charging');
-        this.#pvChargerState.set(3, 'Floating charging');
-        this.#pvChargerState.set(4, 'Balanced charging');
-
+    }
+    static #batteryType = new Map();
+    static {
         this.#batteryType.set(0, 'Lead-acid battery');
         this.#batteryType.set(1, 'Colloidal battery');
         this.#batteryType.set(2, 'Ternary lithium battery');
         this.#batteryType.set(3, 'Lithium iron phosphate');
         this.#batteryType.set(4, 'Customized');
-
+    }
+    static #inverterInternalState;
+    static {
         this.#inverterInternalState = [
             { desc: 'Manual failure ', 0: 'Disabled', 1: 'Enabled'},
             { desc: 'Reserved', 0: '', 1: '' },
@@ -64,6 +39,9 @@ class GNFL extends JNGE {
             { desc: 'AC mains charging switch status', 0: 'AC mains is charging', 1: 'AC mains is not charging' },
             { desc: 'Command to diesel engine', 0: 'Stop', 1: 'Start' }
         ];
+    }
+    static #failureCode1;
+    static {
         this.#failureCode1 =  [
             'Battery overvoltage',
             'Battery overheated',
@@ -82,7 +60,9 @@ class GNFL extends JNGE {
             'Inverter radiator temperature sensor fails',
             'Transformer overheated'
         ];
-        
+    }
+    static #failureCode2;
+    static {
         this.#failureCode2 = [
             'AC input overvoltage',
             'AC input undervoltage',
@@ -101,6 +81,9 @@ class GNFL extends JNGE {
             'Reserved',
             'Manual failure'
         ];
+    }
+    static #failureCodePV;
+    static {
         this.#failureCodePV = [
             'Battery overvoltage',
             'Battery is not connected',
@@ -120,6 +103,36 @@ class GNFL extends JNGE {
             'Reserved',
         ];
     }
+    static #inverterState = new Map();
+    static {
+        this.#inverterState.set(0, 'Standby');
+        this.#inverterState.set(1, 'Municipal electric charging soft start');
+        this.#inverterState.set(2, 'The inverter has a soft start');
+        this.#inverterState.set(3, 'Inverse runs normally');
+        this.#inverterState.set(4, 'Municipal power bypass');
+        this.#inverterState.set(5, 'Charging of municipal power bypass');
+        this.#inverterState.set(6, 'Failure mode');
+        this.#inverterState.set(7, 'Commissioning mode');
+    }
+
+    static #pvChargerState = new Map();
+    static {
+        this.#pvChargerState.set(0, 'Does not charge');
+        this.#pvChargerState.set(1, 'MPPT charging');
+        this.#pvChargerState.set(2, 'Boost charging');
+        this.#pvChargerState.set(3, 'Floating charging');
+        this.#pvChargerState.set(4, 'Balanced charging');
+    }
+    static #mainsChargerState = new Map();
+    static {
+        this.#mainsChargerState.set(0, 'Standby');
+        this.#mainsChargerState.set(1, 'Constant charge');
+        this.#mainsChargerState.set(2, 'Raise the charging');
+        this.#mainsChargerState.set(3, 'Full of it');
+    }
+    constructor(devAddress) {
+        super(devAddress);
+    }
     /**
   * @description getMainsChargerState(data) Return string with status. Return null if any error
   * @param number
@@ -128,9 +141,9 @@ class GNFL extends JNGE {
     getMainsChargerState(data){
     //0x1008 
         if (isNaN( parseInt(data) )) return 'invalid data';
-        if (!this.#mainsChargerState.has( data )) return 'unknown';
+        if (!GNFL.#mainsChargerState.has( data )) return 'unknown';
 
-        return this.#mainsChargerState.get(data);
+        return GNFL.#mainsChargerState.get(data);
     }
     /**
   * @description getInverterState(data) Return string with status. Return null if any error
@@ -140,9 +153,9 @@ class GNFL extends JNGE {
     getInverterState(data){
     //0x100C
         if (isNaN( parseInt(data) )) return 'invalid data';
-        if (!this.#inverterState.has( data )) return 'unknown';
+        if (!GNFL.#inverterState.has( data )) return 'unknown';
 
-        return this.#inverterState.get(data);
+        return GNFL.#inverterState.get(data);
 
     }
     /**
@@ -153,9 +166,9 @@ class GNFL extends JNGE {
     getPvChargerState(data){
     //0x1022 
         if (isNaN( parseInt(data) )) return 'invalid data';
-        if (!this.#pvChargerState.has( data )) return 'unknown';
+        if (!GNFL.#pvChargerState.has( data )) return 'unknown';
 
-        return this.#pvChargerState.get(data);
+        return GNFL.#pvChargerState.get(data);
     }
     /**
   * @description getInverterWorkingMode(data) Return string with status. Return null if any error
@@ -165,9 +178,9 @@ class GNFL extends JNGE {
     getInverterWorkingMode(data){
     //0x1004
         if (isNaN( parseInt(data) )) return 'invalid data';
-        if (!this.#inverterWorkingMode.has( data )) return 'unknown';
+        if (!GNFL.#inverterWorkingMode.has( data )) return 'unknown';
 
-        return this.#inverterWorkingMode.get(data);
+        return GNFL.#inverterWorkingMode.get(data);
     }
     /**
   * @description getBatteryType(data) Return string with status.
@@ -177,9 +190,9 @@ class GNFL extends JNGE {
     getBatteryType(data){
     //batteryType 0x1012
         if (isNaN( parseInt(data) )) return 'invalid data';
-        if (!this.#batteryType.has( data )) return 'unknown';
+        if (!GNFL.#batteryType.has( data )) return 'unknown';
 
-        return this.#batteryType.get(data);
+        return GNFL.#batteryType.get(data);
     }
     /**
   * @description getFailureCode1(data) Return string with status.
@@ -193,9 +206,9 @@ class GNFL extends JNGE {
 
         var i = 0;
         var failerCodes = [];
-        while (mask > 0 || i < this.#failureCode1.length) {
+        while (mask > 0 || i < GNFL.#failureCode1.length) {
             //console.log(msk);
-            if (mask & 1) failerCodes.push(this.#failureCode1[i]);
+            if (mask & 1) failerCodes.push(GNFL.#failureCode1[i]);
             mask  >>= 1;
             i += 1;
         }
@@ -213,10 +226,10 @@ class GNFL extends JNGE {
         if (isNaN( parseInt(mask) )) return 'invalid data';
         if (mask > 0xFFFF) return 'invalid data';
 
-        var i = this.#failureCode2.length-1;
+        var i = GNFL.#failureCode2.length-1;
         var failerCodes = [];
         while ( mask > 0 ) {
-            if (mask & 1) failerCodes.push(this.#failureCode2[i]);
+            if (mask & 1) failerCodes.push(GNFL.#failureCode2[i]);
             mask >>= 1;
             i -= 1;
         }
@@ -235,8 +248,8 @@ class GNFL extends JNGE {
 
         var i = 0;
         var internalState = [];
-        while ( mask > 0 || i < this.#inverterInternalState.length) {
-            internalState.push(`${this.#inverterInternalState[i].desc}: ${this.#inverterInternalState[i][mask & 1]}`);
+        while ( mask > 0 || i < GNFL.#inverterInternalState.length) {
+            internalState.push(`${GNFL.#inverterInternalState[i].desc}: ${GNFL.#inverterInternalState[i][mask & 1]}`);
             mask >>= 1;
             i += 1;
         }
@@ -253,10 +266,10 @@ class GNFL extends JNGE {
         if (isNaN( parseInt(mask) )) return 'invalid data';
         if (mask > 0xFFFF) return 'invalid data';
     
-        var i = this.#failureCodePV.length-1;
+        var i = GNFL.#failureCodePV.length-1;
         var failerCodes = [];
         while ( mask > 0 ) {
-            if (mask & 1) failerCodes.push(this.#failureCodePV[i]);
+            if (mask & 1) failerCodes.push(GNFL.#failureCodePV[i]);
             mask >>= 1;
             i -= 1;
         }
