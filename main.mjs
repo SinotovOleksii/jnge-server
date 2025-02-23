@@ -5,7 +5,7 @@ import datasaver from './datasaver.mjs';
 import { Buffer } from 'node:buffer';
 import { inspect } from 'node:util';
 
-const myServerAddr = '192.168.88.254';
+const myServerAddr = '0.0.0.0';
 const myServerPort = 4309;
 const tcpServer = new Connection('tcpServer', {host:myServerAddr, port:myServerPort}, readHandler);
 const j = new GNFL('06');
@@ -14,7 +14,7 @@ const databaseParams = {
     dataTable: 'device_messages',
     usersTable: 'users'
 };
-const database = new datasaver('jnge_test', databaseParams);
+//const database = new datasaver('jnge_test', databaseParams);
 if (!database.createTables()) { process.exit(1); }
 else { process.stdout.write('Database created success.\n'); }
 
@@ -26,11 +26,11 @@ function readHandler(client, data){
     var parsedData = j.parseData(buf);
     if (!parsedData) return;
 
-    database.saveDevData(parsedData)
-        .then((result) => {
-            result ?. rowCount ? true : process.stdout.write(`Do you have any problem with the query?: ${inspect(result)}`);
-        })
-        .catch(error => process.stderr.write(`Database error occured: ${error}`));
+    // database.saveDevData(parsedData)
+    //     .then((result) => {
+    //         result ?. rowCount ? true : process.stdout.write(`Do you have any problem with the query?: ${inspect(result)}`);
+    //     })
+    //     .catch(error => process.stderr.write(`Database error occured: ${error}`));
 
 
     if (parsedData.devFuncCode == 0x12) {
