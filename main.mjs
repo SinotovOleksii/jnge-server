@@ -86,7 +86,7 @@ setInterval(()=>{
         tcpServer.write(addr, rawHex);
     });
     
-}, 600000);
+}, 60000);
 
 
 
