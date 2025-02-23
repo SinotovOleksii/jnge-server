@@ -15,8 +15,8 @@ const databaseParams = {
     usersTable: 'users'
 };
 //const database = new datasaver('jnge_test', databaseParams);
-if (!database.createTables()) { process.exit(1); }
-else { process.stdout.write('Database created success.\n'); }
+//if (!database.createTables()) { process.exit(1); }
+    //else { process.stdout.write('Database created success.\n'); }
 
 function readHandler(client, data){
     var tdate = new Date();
